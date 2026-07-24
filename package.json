@@ -1,0 +1,11 @@
+{
+  "name": "serverless-requests",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.585.0",
+    "@aws-sdk/lib-dynamodb": "^3.585.0",
+    "express": "^5.2.1",
+    "serverless-http": "^4.0.0"
+  }
+}
