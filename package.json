@@ -6,9 +6,13 @@
     "@aws-sdk/client-dynamodb": "^3.585.0",
     "@aws-sdk/lib-dynamodb": "^3.585.0",
     "aws-sdk": "^2.1693.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
     "express": "^5.2.1",
     "pg": "^8.22.0",
-    "serverless-http": "^4.0.0"
+    "reflect-metadata": "^0.2.2",
+    "serverless-http": "^4.0.0",
+    "typeorm": "^1.1.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
