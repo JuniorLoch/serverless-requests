@@ -14,41 +14,26 @@ provider:
   name: aws
   runtime: nodejs24.x
   architecture: arm64
+  region: sa-east-1
   # Uncomment to easily set up a custom domain. Read the docs for more details:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - Fn::GetAtt: [UsersTable, Arn]
   environment:
-    REQUESTS_TABLE: ${param:tableName}
+    DB_HOST: ${env:DB_HOST, ''}
+    DB_PORT: ${env:DB_PORT, '5432'}
+    DB_NAME: ${env:DB_NAME, 'postgres'}
+    DB_USER: ${env:DB_USER, 'postgres'}
+    DB_PASSWORD: ${env:DB_PASSWORD, ''}
+    DB_SSL_REJECT_UNAUTHORIZED: ${env:DB_SSL_REJECT_UNAUTHORIZED, 'false'}
+  vpc:
+    securityGroupIds:
+      - ${env:DB_SECURITY_GROUP_ID, ''}
+    subnetIds:
+      - ${env:DB_SUBNET_ID_1, ''}
+      - ${env:DB_SUBNET_ID_2, ''}
 
 functions:
   api:
     handler: handler.handler
     events:
       - httpApi: '*'
-
-resources:
-  Resources:
-    RequestsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${param:tableName}
