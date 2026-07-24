@@ -8,7 +8,7 @@ service: serverless-requests
 stages:
   default:
     params:
-      tableName: "users-table-${sls:stage}"
+      tableName: 'users-table-${sls:stage}'
 
 provider:
   name: aws
@@ -37,7 +37,7 @@ functions:
   api:
     handler: handler.handler
     events:
-      - httpApi: "*"
+      - httpApi: '*'
 
 resources:
   Resources:
