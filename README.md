@@ -17,7 +17,7 @@ This template demonstrates how to develop and deploy a simple Node Express API s
 
 This template configures a single function, `api`, which is responsible for handling all incoming requests using the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, the Express.js framework is responsible for routing and handling requests internally. This implementation uses the `serverless-http` package to transform the incoming event request payloads to payloads compatible with Express.js. To learn more about `serverless-http`, please refer to the [serverless-http README](https://github.com/dougmoscrop/serverless-http).
 
-Additionally, it also handles provisioning of a DynamoDB database that is used for storing data about users. The Express.js application exposes two endpoints, `POST /users` and `GET /user/:userId`, which create and retrieve a user record.
+Additionally, it also handles provisioning of a DynamoDB database that is used for storing data about requests. The Express.js application exposes three endpoints, `POST /requests`, `GET /requests/:id`, and `GET /requests`, which create, retrieve, and list request records.
 
 ## Usage
 
@@ -51,28 +51,44 @@ _Note_: In current form, after deployment, your API is public and can be invoked
 
 ### Invocation
 
-After successful deployment, you can create a new user by calling the corresponding endpoint:
+After successful deployment, you can create a new request by calling the corresponding endpoint:
 
 ```
-curl --request POST 'https://xxxxxx.execute-api.us-east-1.amazonaws.com/users' --header 'Content-Type: application/json' --data-raw '{"name": "John", "userId": "someUserId"}'
-```
-
-Which should result in the following response:
-
-```json
-{ "userId": "someUserId", "name": "John" }
-```
-
-You can later retrieve the user by `userId` by calling the following endpoint:
-
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/users/someUserId
+curl --request POST 'https://xxxxxx.execute-api.us-east-1.amazonaws.com/requests' --header 'Content-Type: application/json' --data-raw '{"title": "Deploy app", "description": "Deploy the new application", "priority": "high", "createdBy": "john"}'
 ```
 
 Which should result in the following response:
 
 ```json
-{ "userId": "someUserId", "name": "John" }
+{
+  "id": "request-UUID",
+  "title": "Deploy app",
+  "description": "Deploy the new application",
+  "priority": "high",
+  "createdBy": "john",
+  "status": "pending",
+  "createdAt": "2026-07-24T00:00:00.000Z"
+}
+```
+
+You can later retrieve the request by id by calling the following endpoint:
+
+```
+curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/requests/some-request-id
+```
+
+Which should result in the following response:
+
+```json
+{
+  "id": "some-request-id",
+  "title": "Deploy app",
+  "description": "Deploy the new application",
+  "priority": "high",
+  "createdBy": "john",
+  "status": "pending",
+  "createdAt": "2026-07-24T00:00:00.000Z"
+}
 ```
 
 ### Local development
