@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Request } from '../models/requests/request';
+import { Request } from '../models/requests/entity/request';
 
 const isSslEnabled = process.env.DB_SSL !== 'false';
 
