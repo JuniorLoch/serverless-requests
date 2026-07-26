@@ -4,18 +4,18 @@ export class CreateRequestDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
-  title!: string;
+  title: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
-  description!: string;
+  description: string;
 
   @IsIn(['low', 'medium', 'high'])
-  priority!: 'low' | 'medium' | 'high';
+  priority: 'low' | 'medium' | 'high';
 
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
-  createdBy!: string;
+  createdBy: string;
 }

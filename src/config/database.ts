@@ -1,5 +1,7 @@
 import { DataSource } from 'typeorm';
-import { Request } from './entities/Request';
+import { Request } from '../models/requests/request';
+
+const isSslEnabled = process.env.DB_SSL !== 'false';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -11,7 +13,9 @@ export const AppDataSource = new DataSource({
   entities: [Request],
   synchronize: false,
   logging: false,
-  ssl: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' ? {
-    rejectUnauthorized: false,
-  } : false,
+  ssl: isSslEnabled
+    ? {
+        rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true',
+      }
+    : false,
 });

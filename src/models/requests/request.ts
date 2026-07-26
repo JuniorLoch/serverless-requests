@@ -3,23 +3,23 @@ import { Entity, PrimaryColumn, Column } from 'typeorm';
 @Entity('requests')
 export class Request {
   @PrimaryColumn('uuid')
-  id!: string;
+  id: string;
 
   @Column('text')
-  title!: string;
+  title: string;
 
   @Column('text')
-  description!: string;
+  description: string;
 
   @Column('text')
-  priority!: 'low' | 'medium' | 'high';
+  priority: 'low' | 'medium' | 'high';
 
   @Column('text', { name: 'created_by' })
-  createdBy!: string;
+  createdBy: string;
 
   @Column('text', { default: 'pending' })
-  status!: 'pending' | 'in_progress' | 'completed';
+  status: 'pending' | 'in_progress' | 'completed';
 
   @Column('text', { name: 'created_at' })
-  createdAt!: string;
+  createdAt: string;
 }

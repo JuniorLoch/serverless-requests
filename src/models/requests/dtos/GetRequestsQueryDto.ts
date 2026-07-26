@@ -7,5 +7,5 @@ export class GetRequestsQueryDto {
 
   @IsIn(['pending', 'in_progress', 'completed'])
   @IsOptional()
-  status?: 'pending' | 'in_progress' | 'completed' | '';
+  status?: 'pending' | 'in_progress' | 'completed';
 }

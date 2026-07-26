@@ -24,6 +24,7 @@ provider:
     DB_NAME: ${env:DB_NAME, 'postgres'}
     DB_USER: ${env:DB_USER, 'postgres'}
     DB_PASSWORD: ${env:DB_PASSWORD, ''}
+    DB_SSL: ${env:DB_SSL, 'true'}
     DB_SSL_REJECT_UNAUTHORIZED: ${env:DB_SSL_REJECT_UNAUTHORIZED, 'false'}
   vpc:
     securityGroupIds:
@@ -31,6 +32,14 @@ provider:
     subnetIds:
       - ${env:DB_SUBNET_ID_1, ''}
       - ${env:DB_SUBNET_ID_2, ''}
+
+package:
+  patterns:
+    - handler.ts
+    - src/**
+    - node_modules/**
+    - package.json
+    - package-lock.json
 
 functions:
   api:

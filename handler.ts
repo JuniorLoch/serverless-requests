@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import { randomUUID } from 'crypto';
 import express, { json, type NextFunction, type Request, type Response } from 'express';
 import serverless from 'serverless-http';
-import { AppDataSource } from './src/database';
-import { Request as RequestEntity } from './src/entities/Request';
-import { CreateRequestDto } from './src/dtos/CreateRequestDto';
-import { GetRequestsQueryDto } from './src/dtos/GetRequestsQueryDto';
+import { AppDataSource } from './src/config/database';
+import { Request as RequestEntity } from './src/models/requests/request';
+import { CreateRequestDto } from './src/models/requests/dtos/CreateRequestDto';
+import { GetRequestsQueryDto } from './src/models/requests/dtos/GetRequestsQueryDto';
 import { validateDto, sendValidationError } from './src/utils/validation';
 
 const app = express();
