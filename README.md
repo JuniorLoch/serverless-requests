@@ -47,10 +47,6 @@ functions:
   api: serverless-requests-dev-api (50 MB)
 ```
 
-_Note_: In its current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/).
-
----
-
 ### Invocation
 
 #### 1. Create a Request (`POST /requests`)
