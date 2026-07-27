@@ -1,16 +1,3 @@
-<!--
-title: 'Serverless Framework Node Express API service backed by DynamoDB on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Node Express API service backed by DynamoDB running on AWS Lambda using the Serverless Framework.'
-layout: Doc
-framework: v4
-platform: AWS
-language: nodeJS
-priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, Inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
-
 # Serverless Framework Node Express API on AWS (PostgreSQL + TypeORM)
 
 This project demonstrates how to develop and deploy a Node Express API service, backed by PostgreSQL using TypeORM, running on AWS Lambda with the Serverless Framework.
@@ -46,10 +33,6 @@ endpoint: ANY - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com
 functions:
   api: serverless-requests-dev-api (50 MB)
 ```
-
-_Note_: In its current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/).
-
----
 
 ### Invocation
 
@@ -122,7 +105,7 @@ curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests?createdBy=
 To run and test locally using Serverless Framework:
 
 ```bash
-serverless dev
+npm run dev
 ```
 
 This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda.

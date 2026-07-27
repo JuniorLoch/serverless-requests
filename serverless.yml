@@ -5,6 +5,9 @@ app: teste-tecnico-bliss
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: serverless-requests
 
+plugins:
+  - serverless-offline
+
 stages:
   default:
     params:
