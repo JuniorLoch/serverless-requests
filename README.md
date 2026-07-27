@@ -105,7 +105,7 @@ curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests?createdBy=
 To run and test locally using Serverless Framework:
 
 ```bash
-serverless dev
+npm run dev
 ```
 
 This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda.
