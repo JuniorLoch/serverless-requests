@@ -3,20 +3,25 @@ import express, { json, type NextFunction, type Request, type Response } from 'e
 import serverless from 'serverless-http';
 import { AppDataSource } from './src/config/database';
 import { requestsRouter } from './src/models/requests/requests.router';
+import { Logger } from '@aws-lambda-powertools/logger';
 
 const app = express();
 
-let dbInitialized = false;
 const ensureDbInitialized = async (_req: Request, _res: Response, next: NextFunction) => {
-  if (!dbInitialized && !AppDataSource.isInitialized) {
+  const logger = new Logger({ serviceName: '[DB]' });
+
+  if (!AppDataSource.isInitialized) {
     try {
-      console.log('[DB] Initializing TypeORM connection...');
+      logger.info('[DB] Initializing TypeORM connection...');
+
       await AppDataSource.initialize();
-      console.log('[DB] ✓ TypeORM connection initialized');
-      dbInitialized = true;
-    } catch (error) {
-      console.error('[DB] ✗ Failed to initialize TypeORM:', error);
+
+      logger.info('[DB] ✓ TypeORM connection initialized');
+    } catch (error: any) {
+      logger.error('[DB] ✗ Failed to initialize TypeORM:', error);
+
       next(error);
+
       return;
     }
   }
@@ -27,6 +32,8 @@ app.use(json());
 app.use(ensureDbInitialized);
 
 app.get('/', async (_req: Request, res: Response) => {
+  const logger = new Logger({ serviceName: '[GET /]' });
+
   try {
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
@@ -34,8 +41,9 @@ app.get('/', async (_req: Request, res: Response) => {
     await queryRunner.release();
 
     res.json({ data: result[0].version, message: 'Database connection successful' });
-  } catch (error) {
-    console.error('[GET /] ✗ Error:', error);
+  } catch (error: any) {
+    logger.error('[GET /] ✗ Error:', error);
+
     res.status(500).json({
       error: 'Database connection failed',
       details: String(error),
