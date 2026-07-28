@@ -74,3 +74,10 @@ functions:
       - httpApi:
           path: /requests
           method: get
+
+  completeRequest:
+    handler: handler.completeRequest
+    events:
+      - httpApi:
+          path: /requests/{id}/complete
+          method: patch

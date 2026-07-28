@@ -36,6 +36,13 @@ export class RequestsService {
 
     return this.repository.find({ where: whereConditions });
   }
+
+  async complete(id: string): Promise<RequestEntity | null> {
+    const request = await this.repository.findOne({ where: { id } });
+    if (!request) return null;
+
+    return this.repository.save({ ...request, status: 'completed' });
+  }
 }
 
 export const requestsService = new RequestsService();

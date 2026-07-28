@@ -2,11 +2,23 @@
 
 Este projeto demonstra uma implementacao de um serviço de API Node.js com Express, utilizando o RDS da amazon com PostgreSQL via TypeORM, executado a api no AWS Lambda através do Serverless Framework.
 
-Esta estrutura configura 4 funções Lambda dedicadas (`healthCheck`, `createRequest`, `getRequestById` e `listRequests`), responsáveis por manipular as requisições HTTP através do evento `httpApi`. O framework Express.js é responsável pelo roteamento e tratamento interno das requisições via `serverless-http`.
+Esta estrutura configura 5 funções Lambda dedicadas (`healthCheck`, `createRequest`, `getRequestById`, `listRequests` e `completeRequest`), responsáveis por manipular as requisições HTTP através do evento `httpApi`. O framework Express.js é responsável pelo roteamento e tratamento interno das requisições via `serverless-http`.
 
-A aplicação expõe endpoints para checagem de saúde (`GET /`), criar (`POST /requests`), buscar por ID (`GET /requests/:id`) e listar (`GET /requests`) registros de solicitações.
+A aplicação expõe endpoints para checagem de saúde (`GET /`), criar (`POST /requests`), buscar por ID (`GET /requests/:id`), listar (`GET /requests`) e marcar como concluída (`PATCH /requests/:id/complete`) registros de solicitações.
 
 ## Como Usar
+
+### Requerimentos iniciais
+
+Para poder executar esse projeto, primeiramente você precisa ter criado no serviço da AWS
+um banco de dados do RDS (o projeto está pré-configurado para postgreSQL) e preencher as
+variáveis de ambiente com os dados de acesso ao banco de dados e à VPC.
+
+> **Importante**: Vale lembrar que, para rodar as migrações e o modo desenvolvedor num ambiente local
+> você deve primeiramente deixar seu banco de dados liberado ao público e também adicionar
+> uma permissão para o seu IP local acessar o banco de dados nas configurações do seu
+> `security-group` associado, crie uma **inbound rule**, adicione como tipo postgreSQL e
+> coloque o source como my-ip
 
 ### Deploy
 
@@ -66,11 +78,13 @@ endpoints:
   POST - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests
   GET - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests/{id}
   GET - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests
+  PATCH - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests/{id}/complete
 functions:
   healthCheck: serverless-requests-dev-healthCheck (15 MB)
   createRequest: serverless-requests-dev-createRequest (15 MB)
   getRequestById: serverless-requests-dev-getRequestById (15 MB)
   listRequests: serverless-requests-dev-listRequests (15 MB)
+  completeRequest: serverless-requests-dev-completeRequest (15 MB)
 ```
 
 ### Exemplos de Uso
@@ -135,6 +149,34 @@ curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests?createdBy=
     "createdAt": "2026-07-26T01:50:00.000Z"
   }
 ]
+```
+
+#### 4. Marcar Solicitação como Concluída (`PATCH /requests/:id/complete`)
+
+```bash
+curl -X PATCH "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests/<request-uuid>/complete"
+```
+
+**Resposta Esperada (200 OK):**
+
+```json
+{
+  "id": "e4b8a2c1-3d7f-4f8a-9e1b-2c3d4e5f6a7b",
+  "title": "Deploy app",
+  "description": "Deploy the new application",
+  "priority": "high",
+  "createdBy": "john",
+  "status": "completed",
+  "createdAt": "2026-07-26T01:50:00.000Z"
+}
+```
+
+**Resposta quando não encontrada (404 Not Found):**
+
+```json
+{
+  "error": "Request not found"
+}
 ```
 
 ---

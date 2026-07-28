@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import express, { json, type NextFunction, type Request, type Response } from 'express';
 import serverless from 'serverless-http';
 import { AppDataSource } from './src/config/database';
-import { createRequestRouter, getRequestByIdRouter, listRequestsRouter } from './src/models/requests/requests.router';
+import { createRequestRouter, getRequestByIdRouter, listRequestsRouter, completeRequestRouter } from './src/models/requests/requests.router';
 import { Logger } from '@aws-lambda-powertools/logger';
 
 const ensureDbInitialized = async (_req: Request, _res: Response, next: NextFunction) => {
@@ -55,3 +55,5 @@ export const healthCheck = serverless(healthApp);
 export const createRequest = serverless(createExpressApp().use(createRequestRouter));
 export const getRequestById = serverless(createExpressApp().use(getRequestByIdRouter));
 export const listRequests = serverless(createExpressApp().use(listRequestsRouter));
+export const completeRequest = serverless(createExpressApp().use(completeRequestRouter));
+
