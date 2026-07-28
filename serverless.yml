@@ -8,11 +8,6 @@ service: serverless-requests
 plugins:
   - serverless-offline
 
-stages:
-  default:
-    params:
-      tableName: 'requests-table-${sls:stage}'
-
 provider:
   name: aws
   runtime: nodejs24.x
@@ -38,9 +33,17 @@ provider:
 
 package:
   patterns:
+    - '!.serverless/**'
+    - '!.git/**'
+    - '!.github/**'
+    - 'node_modules/**'
+    - '!node_modules/serverless/**'
+    - '!node_modules/serverless-offline/**'
+    - '!node_modules/typescript/**'
+    - '!node_modules/ts-node/**'
+    - '!node_modules/@types/**'
     - handler.ts
     - src/**
-    - node_modules/**
     - package.json
     - package-lock.json
 

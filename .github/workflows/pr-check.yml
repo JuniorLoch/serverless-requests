@@ -48,3 +48,31 @@ jobs:
           DB_SUBNET_ID_1: ${{ secrets.DB_SUBNET_ID_1 }}
           DB_SUBNET_ID_2: ${{ secrets.DB_SUBNET_ID_2 }}
         run: npx serverless package
+
+      - name: Check Package Size (< 250 MB)
+        run: |
+          ZIP_FILE=$(ls .serverless/*.zip | head -n 1)
+          if [ ! -f "$ZIP_FILE" ]; then
+            echo "::error::No zip artifact found in .serverless/"
+            exit 1
+          fi
+
+          # Extract unzipped total bytes from unzip listing summary
+          UNZIPPED_BYTES=$(unzip -l "$ZIP_FILE" | tail -n 1 | awk '{print $1}')
+          ZIP_BYTES=$(stat -c%s "$ZIP_FILE")
+
+          UNZIPPED_MB=$(( UNZIPPED_BYTES / 1024 / 1024 ))
+          ZIP_MB=$(( ZIP_BYTES / 1024 / 1024 ))
+
+          echo "Zip archive size: ${ZIP_MB} MB (${ZIP_BYTES} bytes)"
+          echo "Unzipped size: ${UNZIPPED_MB} MB (${UNZIPPED_BYTES} bytes)"
+
+          # AWS Lambda unzipped limit is 250 MB (262,144,000 bytes)
+          MAX_BYTES=262144000
+
+          if [ "$UNZIPPED_BYTES" -gt "$MAX_BYTES" ]; then
+            echo "::error::Unzipped package size (${UNZIPPED_MB} MB / ${UNZIPPED_BYTES} bytes) exceeds AWS Lambda 250 MB limit!"
+            exit 1
+          fi
+
+          echo "✅ Package size check passed successfully!"
