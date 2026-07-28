@@ -7,8 +7,9 @@
     "typecheck": "tsc --noEmit",
     "package": "serverless package",
     "deploy": "serverless deploy",
-    "migration:run": "ts-node -r dotenv/config node_modules/typeorm/cli.js migration:run -d src/config/database.ts",
-    "migration:revert": "ts-node -r dotenv/config node_modules/typeorm/cli.js migration:revert -d src/config/database.ts"
+    "migration:run": "NODE_OPTIONS='--require dotenv/config' tsx node_modules/typeorm/cli.js migration:run -d src/config/database.ts",
+    "migration:revert": "NODE_OPTIONS='--require dotenv/config' tsx node_modules/typeorm/cli.js migration:revert -d src/config/database.ts",
+    "migration:create": "tsx node_modules/typeorm/cli.js migration:create src/migrations/migration"
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.34.0",
@@ -28,6 +29,7 @@
     "serverless": "^4.40.0",
     "serverless-offline": "^14.7.4",
     "ts-node": "^10.9.2",
+    "tsx": "^4.23.1",
     "typescript": "^7.0.2"
   }
 }
