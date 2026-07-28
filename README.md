@@ -24,6 +24,30 @@ cp .env.example .env
 
 > **Nota**: Abra o arquivo `.env` criado e preencha as variáveis de ambiente com os dados corretos de acesso ao seu banco de dados e VPC.
 
+### Migração do Banco de Dados
+
+Antes do primeiro deploy, é necessário criar a tabela `requests` no banco de dados PostgreSQL. Você pode fazer isso de duas formas:
+
+**Opção 1 — Localmente via npm** :
+
+```bash
+npm run migration:run
+```
+
+Para reverter a última migração, caso necessário:
+
+```bash
+npm run migration:revert
+```
+
+**Opção 2 — Via GitHub Actions** :
+
+1. Acesse o repositório no GitHub.
+2. Vá em **Actions** → **Run Database Migrations**.
+3. Clique em **Run workflow** e confirme.
+
+> A action usará as secrets configuradas no repositório para se conectar ao banco de dados RDS e executar as migrações automaticamente.
+
 E em seguida faça o deploy com:
 
 ```bash

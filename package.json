@@ -6,7 +6,9 @@
     "dev": "serverless offline",
     "typecheck": "tsc --noEmit",
     "package": "serverless package",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "migration:run": "ts-node -r dotenv/config node_modules/typeorm/cli.js migration:run -d src/config/database.ts",
+    "migration:revert": "ts-node -r dotenv/config node_modules/typeorm/cli.js migration:revert -d src/config/database.ts"
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.34.0",

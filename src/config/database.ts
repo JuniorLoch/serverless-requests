@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Request } from '../models/requests/entity/request';
+import { CreateRequestsTable1785213817600 } from '../migrations/1785213817600-CreateRequestsTable';
 
 const isSslEnabled = process.env.DB_SSL !== 'false';
 
@@ -11,6 +12,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || '',
   entities: [Request],
+  migrations: [CreateRequestsTable1785213817600],
   synchronize: false,
   logging: false,
   ssl: isSslEnabled
