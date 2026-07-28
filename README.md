@@ -1,48 +1,63 @@
-# Serverless Framework Node Express API on AWS (PostgreSQL + TypeORM)
+# API Node Express com Serverless Framework na AWS (RDS PostgreSQL + TypeORM)
 
-This project demonstrates how to develop and deploy a Node Express API service, backed by PostgreSQL using TypeORM, running on AWS Lambda with the Serverless Framework.
+Este projeto demonstra uma implementacao de um serviço de API Node.js com Express, utilizando o RDS da amazon com PostgreSQL via TypeORM, executado a api no AWS Lambda através do Serverless Framework.
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests using the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). The Express.js framework is responsible for routing and handling requests internally via `serverless-http`.
+Esta estrutura configura 4 funções Lambda dedicadas (`healthCheck`, `createRequest`, `getRequestById` e `listRequests`), responsáveis por manipular as requisições HTTP através do evento `httpApi`. O framework Express.js é responsável pelo roteamento e tratamento interno das requisições via `serverless-http`.
 
-The Express.js application exposes endpoints to create (`POST /requests`), retrieve (`GET /requests/:id`), and list (`GET /requests`) request records.
+A aplicação expõe endpoints para checagem de saúde (`GET /`), criar (`POST /requests`), buscar por ID (`GET /requests/:id`) e listar (`GET /requests`) registros de solicitações.
 
-## Usage
+## Como Usar
 
-### Deployment
+### Deploy
 
-Install dependencies with:
+Instale as dependências com:
 
 ```bash
 npm install
 ```
 
-and then deploy with:
+Crie o arquivo de variáveis de ambiente a partir do modelo de exemplo:
 
 ```bash
-serverless deploy
+cp .env.example .env
 ```
 
-After running deploy, you should see output similar to:
+> **Nota**: Abra o arquivo `.env` criado e preencha as variáveis de ambiente com os dados corretos de acesso ao seu banco de dados e VPC.
+
+E em seguida faça o deploy com:
+
+```bash
+npm run deploy
+```
+
+Após executar o deploy, você verá uma saída semelhante a:
 
 ```text
 Deploying "serverless-requests" to stage "dev" (sa-east-1)
 
 ✔ Service deployed to stack serverless-requests-dev (87s)
 
-endpoint: ANY - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com
+endpoints:
+  GET - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/
+  POST - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests
+  GET - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests/{id}
+  GET - https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests
 functions:
-  api: serverless-requests-dev-api (50 MB)
+  healthCheck: serverless-requests-dev-healthCheck (15 MB)
+  createRequest: serverless-requests-dev-createRequest (15 MB)
+  getRequestById: serverless-requests-dev-getRequestById (15 MB)
+  listRequests: serverless-requests-dev-listRequests (15 MB)
 ```
 
-### Invocation
+### Exemplos de Uso
 
-#### 1. Create a Request (`POST /requests`)
+#### 1. Criar uma Solicitação (`POST /requests`)
 
 ```bash
 curl -X POST "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests" -H "Content-Type: application/json" -d "{\"title\": \"Deploy app\", \"description\": \"Deploy the new application\", \"priority\": \"high\", \"createdBy\": \"john\"}"
 ```
 
-**Expected Response (201 Created):**
+**Resposta Esperada (201 Created):**
 
 ```json
 {
@@ -56,13 +71,13 @@ curl -X POST "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests" -
 }
 ```
 
-#### 2. Retrieve a Request by ID (`GET /requests/:id`)
+#### 2. Buscar Solicitação por ID (`GET /requests/:id`)
 
 ```bash
 curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests/<request-uuid>"
 ```
 
-**Expected Response (200 OK):**
+**Resposta Esperada (200 OK):**
 
 ```json
 {
@@ -76,13 +91,13 @@ curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests/<request-u
 }
 ```
 
-#### 3. List Requests with Filters (`GET /requests`)
+#### 3. Listar Solicitações com Filtros (`GET /requests`)
 
 ```bash
 curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests?createdBy=john&status=pending"
 ```
 
-**Expected Response (200 OK):**
+**Resposta Esperada (200 OK):**
 
 ```json
 [
@@ -100,12 +115,12 @@ curl "https://i5ic2tydb1.execute-api.sa-east-1.amazonaws.com/requests?createdBy=
 
 ---
 
-### Local development
+### Desenvolvimento Local
 
-To run and test locally using Serverless Framework:
+Para executar e testar localmente usando o Serverless Framework:
 
 ```bash
 npm run dev
 ```
 
-This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda.
+Isso iniciará um emulador local do AWS Lambda e Serverless Offline para testar suas requisições.

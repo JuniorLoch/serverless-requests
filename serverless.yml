@@ -8,14 +8,13 @@ service: serverless-requests
 plugins:
   - serverless-offline
 
+frameworkVersion: ~4.40.0
+
 provider:
   name: aws
   runtime: nodejs24.x
   architecture: arm64
   region: sa-east-1
-  # Uncomment to easily set up a custom domain. Read the docs for more details:
-  # https://www.serverless.com/framework/docs/providers/aws/guide/domains
-  # domain: api.example.com
   environment:
     DB_HOST: ${env:DB_HOST, ''}
     DB_PORT: ${env:DB_PORT, '5432'}
@@ -48,7 +47,30 @@ package:
     - package-lock.json
 
 functions:
-  api:
-    handler: handler.handler
+  healthCheck:
+    handler: handler.healthCheck
     events:
-      - httpApi: '*'
+      - httpApi:
+          path: /
+          method: get
+
+  createRequest:
+    handler: handler.createRequest
+    events:
+      - httpApi:
+          path: /requests
+          method: post
+
+  getRequestById:
+    handler: handler.getRequestById
+    events:
+      - httpApi:
+          path: /requests/{id}
+          method: get
+
+  listRequests:
+    handler: handler.listRequests
+    events:
+      - httpApi:
+          path: /requests
+          method: get

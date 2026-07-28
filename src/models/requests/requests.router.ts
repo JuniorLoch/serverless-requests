@@ -1,10 +1,6 @@
 import { Router } from 'express';
 import { requestsController } from './requests.controller';
 
-const router = Router();
-
-router.post('/', requestsController.create);
-router.get('/:id', requestsController.findOne);
-router.get('/', requestsController.findAll);
-
-export const requestsRouter = router;
+export const createRequestRouter = Router().post('/requests', requestsController.create);
+export const getRequestByIdRouter = Router().get('/requests/:id', requestsController.findOne);
+export const listRequestsRouter = Router().get('/requests', requestsController.findAll);
