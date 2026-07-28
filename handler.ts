@@ -2,10 +2,8 @@ import 'reflect-metadata';
 import express, { json, type NextFunction, type Request, type Response } from 'express';
 import serverless from 'serverless-http';
 import { AppDataSource } from './src/config/database';
-import { requestsRouter } from './src/models/requests/requests.router';
+import { createRequestRouter, getRequestByIdRouter, listRequestsRouter, completeRequestRouter } from './src/models/requests/requests.router';
 import { Logger } from '@aws-lambda-powertools/logger';
-
-const app = express();
 
 const ensureDbInitialized = async (_req: Request, _res: Response, next: NextFunction) => {
   const logger = new Logger({ serviceName: '[DB]' });
@@ -13,27 +11,28 @@ const ensureDbInitialized = async (_req: Request, _res: Response, next: NextFunc
   if (!AppDataSource.isInitialized) {
     try {
       logger.info('[DB] Initializing TypeORM connection...');
-
       await AppDataSource.initialize();
-
       logger.info('[DB] ✓ TypeORM connection initialized');
     } catch (error: any) {
       logger.error('[DB] ✗ Failed to initialize TypeORM:', error);
-
       next(error);
-
       return;
     }
   }
   next();
 };
 
-app.use(json());
-app.use(ensureDbInitialized);
+const createExpressApp = () => {
+  const app = express();
+  app.use(json());
+  app.use(ensureDbInitialized);
+  return app;
+};
 
-app.get('/', async (_req: Request, res: Response) => {
+const healthApp = createExpressApp();
+
+healthApp.get('/', async (_req: Request, res: Response) => {
   const logger = new Logger({ serviceName: '[GET /]' });
-
   try {
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
@@ -43,7 +42,6 @@ app.get('/', async (_req: Request, res: Response) => {
     res.json({ data: result[0].version, message: 'Database connection successful' });
   } catch (error: any) {
     logger.error('[GET /] ✗ Error:', error);
-
     res.status(500).json({
       error: 'Database connection failed',
       details: String(error),
@@ -52,12 +50,10 @@ app.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-app.use('/requests', requestsRouter);
+export const healthCheck = serverless(healthApp);
 
-app.use((_req: Request, res: Response) => {
-  return res.status(404).json({
-    error: 'Route not Found',
-  });
-});
+export const createRequest = serverless(createExpressApp().use(createRequestRouter));
+export const getRequestById = serverless(createExpressApp().use(getRequestByIdRouter));
+export const listRequests = serverless(createExpressApp().use(listRequestsRouter));
+export const completeRequest = serverless(createExpressApp().use(completeRequestRouter));
 
-export const handler = serverless(app);

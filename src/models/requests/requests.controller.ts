@@ -77,6 +77,29 @@ export class RequestsController {
       res.status(500).json({ error: 'Could not list requests', details: String(error) });
     }
   };
+
+  complete = async (req: Request, res: Response): Promise<void> => {
+    const logger = new Logger({ serviceName: '[PATCH /requests/:id/complete]' });
+
+    try {
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      logger.info('Completing request:', id);
+
+      const updated = await this.service.complete(id);
+
+      if (!updated) {
+        logger.info('Request not found');
+        res.status(404).json({ error: 'Request not found' });
+        return;
+      }
+
+      logger.info('Request marked as completed:', id);
+      res.json(updated);
+    } catch (error: any) {
+      logger.error(' ✗ Error:', error);
+      res.status(500).json({ error: 'Could not complete request', details: String(error) });
+    }
+  };
 }
 
 export const requestsController = new RequestsController();
